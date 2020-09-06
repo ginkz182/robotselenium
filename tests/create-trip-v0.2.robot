@@ -3,7 +3,7 @@ Documentation     Planit
 Library           SeleniumLibrary
 
 *** Variables ***
-#${HOME_URL}      https://www.planittripplanner.com/
+${HOME_URL}      https://www.planittripplanner.com/
 ${BROWSER}       Chrome
 
 *** Test Cases ***
@@ -42,7 +42,7 @@ Create Trip
 
     #verify itinerary page
     ${url}          Get Location
-    Should Match Regexp    ${url}    https://www.planittripplanner.com/itinerary/*
+    Should Match Regexp    ${url}    ${HOME_URL}/itinerary/*
     [Teardown]    Close Browser
 
 
