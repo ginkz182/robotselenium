@@ -1,9 +1,11 @@
 *** Settings ***
 Documentation     Planit
 Library           SeleniumLibrary
+Library            DebugLibrary
+Library         DateTime
 
 *** Variables ***
-${HOME_URL}      https://www.planittripplanner.com/
+${HOME_URL}      https://planit-tripplaner.azurewebsites.net
 ${BROWSER}       Chrome
 
 *** Test Cases ***
@@ -22,8 +24,13 @@ Create Trip
     Wait Until Element Is Visible   css:div.page-content div.modal.fade.show
     Click Element   css:div#calendar-wrap input
     Wait Until Element Is Visible   css:div.flatpickr-calendar.open
-    Click Element   xpath://div[@class='dayContainer']/span[@class='flatpickr-day '][text()='20']
-    Click Element   xpath://div[@class='dayContainer']/span[@class='flatpickr-day'][text()='22']
+    ${date1}=       Get Current Date      UTC      exclude_millis=yes
+    ${date1}=       Add Time To Date      ${date1}      1 day
+    ${date2}=       Add Time To Date      ${date1}      2 days
+    ${startdate}    Convert Date      ${date1}      result_format=%d
+    ${enddate}      Convert Date      ${date2}      result_format=%d
+    Click Element   xpath://div[@class='dayContainer']/span[@class='flatpickr-day '][text()='${startdate}']
+    Click Element   xpath://div[@class='dayContainer']/span[@class='flatpickr-day'][text()='${enddate}']
     Click Element   css:div.flatpickr-calendar button.btn-p--light
     Click Element   css:div.modal-footer button
 
@@ -37,7 +44,8 @@ Create Trip
     Wait Until Element Is Not Visible   css:div.loading-screen
 
     #next get itinerary
-    Click Element   xpath://div[@class='modal-footer justify-content-between']/button[2]
+    Wait Until Element Is Visible   css:div.attraction__list-item img
+    Click Element   css:div.modal-footer button.btn-q4-get-itinerary
     Wait Until Element Is Not Visible   css:div.loading-screen
 
     #verify itinerary page
